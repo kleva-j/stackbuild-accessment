@@ -1,3 +1,5 @@
+const { withContentlayer } = require("next-contentlayer");
+
 const ContentSecurityPolicy = `
   default-src 'self';
   script-src 'self' 'unsafe-eval' 'unsafe-inline' giscus.app analytics.umami.is;
@@ -43,7 +45,7 @@ const securityHeaders = [
 /**
  * @type {import('next/dist/next-server/server/config').NextConfig}
  **/
-module.exports = {
+const nextConfig = {
   reactStrictMode: true,
   pageExtensions: ["ts", "tsx", "js", "jsx", "md", "mdx"],
   eslint: {
@@ -53,4 +55,7 @@ module.exports = {
   async headers() {
     return [{ source: "/(.*)", headers: securityHeaders }];
   },
+  swcMinify: true,
 };
+
+module.exports = withContentlayer(nextConfig);
