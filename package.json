@@ -7,9 +7,13 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "format": "prettier --write \"**/*.{js,jsx,ts,tsx}\""
+    "format": "prettier --write \"**/*.{js,jsx,ts,tsx}\"",
+    "db-pull": "prisma db pull",
+    "db-migrate": "prisma migrate dev",
+    "db-generate": "prisma generate"
   },
   "dependencies": {
+    "@prisma/client": "5.4.1",
     "@radix-ui/react-icons": "^1.3.0",
     "@radix-ui/themes": "^2.0.0",
     "class-variance-authority": "^0.7.0",
@@ -29,6 +33,7 @@
   "devDependencies": {
     "@commitlint/cli": "^17.7.2",
     "@commitlint/config-conventional": "^17.7.0",
+    "@types/mdx": "^2.0.8",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
@@ -40,6 +45,7 @@
     "postcss": "^8",
     "prettier": "^3.0.3",
     "prettier-plugin-tailwindcss": "^0.5.5",
+    "prisma": "^5.4.1",
     "tailwindcss": "^3",
     "typescript": "^5"
   },
