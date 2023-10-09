@@ -3,8 +3,11 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "build:migrate": "prisma generate",
+    "build:generate": "prisma migrate deploy",
+    "build:next": "next build",
     "dev": "next dev --experimental-https",
-    "build": "next build",
+    "build": "run-s build:*",
     "start": "next start",
     "lint": "next lint",
     "format": "prettier --write \"**/*.{js,jsx,ts,tsx}\"",
