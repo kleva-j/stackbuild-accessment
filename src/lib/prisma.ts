@@ -1,20 +1,18 @@
 import { PrismaClient } from "@prisma/client";
 
-// 1. Import libSQL and the Prisma libSQL driver adapter
-import { PrismaLibSQL } from "@prisma/adapter-libsql";
-import { createClient } from "@libsql/client";
+declare global {
+  var cachedPrisma: PrismaClient;
+}
 
-// 2. Instantiate libSQL
-const libsql = createClient({
-  // @ts-expect-error
-  url: process.env.DATABASE_URL,
-  authToken: process.env.TURSO_AUTH_TOKEN,
-});
+let prisma: PrismaClient;
 
-// 3. Instantiate the libSQL driver adapter
-const adapter = new PrismaLibSQL(libsql);
-// Pass the adapter option to the Prisma Client instance
-// @ts-expect-error
-export const prisma = new PrismaClient({ adapter });
+if (process.env.NODE_ENV === "production") {
+  prisma = new PrismaClient();
+} else {
+  if (!global.cachedPrisma) {
+    global.cachedPrisma = new PrismaClient();
+  }
+  prisma = global.cachedPrisma;
+}
 
 export default prisma;
