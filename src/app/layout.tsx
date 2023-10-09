@@ -4,20 +4,27 @@ import "@radix-ui/themes/styles.css";
 import type { Metadata } from "next";
 
 import { FontSans, FontMono } from "@/lib/fonts";
+import { getServerSession } from "next-auth";
 import { PropsWithChildren } from "react";
 
-import Providers from "@/components/Providers";
+// Context providers
+import SessionProvider from "@/components/Providers/SessionProvider";
+import ThemeProvider from "@/components/Providers/ThemeProvider";
 
 export const metadata: Metadata = {
   title: "StackBuild",
   description: "StackBuild Accessment.",
 };
 
-export default function RootLayout({ children }: PropsWithChildren) {
+export default async function RootLayout({ children }: PropsWithChildren) {
+  const session = await getServerSession();
+
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${FontSans.variable} ${FontMono.variable} font-sans`}>
-        <Providers>{children}</Providers>
+        <SessionProvider session={session}>
+          <ThemeProvider>{children}</ThemeProvider>
+        </SessionProvider>
       </body>
     </html>
   );

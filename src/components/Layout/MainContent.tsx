@@ -1,16 +1,15 @@
 "use client";
 
-import { Button, Text, Flex, Box } from "@radix-ui/themes";
+import { Flex, Box, Container, Heading } from "@radix-ui/themes";
 
 export default function MainContent() {
   return (
-    <Box px="4" className="mt-16 pt-16">
-      <Flex direction="column" align="center" justify="center" gap="2">
-        <Text>Hello from XDR</Text>
-        <Box width="max-content">
-          <Button radius="large">Let&apos;s go</Button>
-        </Box>
-      </Flex>
+    <Box px="4" className="">
+      <Container size="4">
+        <Flex direction="column" gap="7" mt="8">
+          <Heading size="7">Latest Blog</Heading>
+        </Flex>
+      </Container>
     </Box>
   );
 }
