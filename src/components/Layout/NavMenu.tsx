@@ -1,14 +1,26 @@
 "use client";
 
+import NextLink from "next/link";
+
+import { Button, Avatar, Flex, Link, Box } from "@radix-ui/themes";
 import { signIn, signOut, useSession } from "next-auth/react";
-import { Button, Avatar, Flex, Box } from "@radix-ui/themes";
+import { usePathname } from "next/navigation";
+import { Home } from "lucide-react";
 
 export default function NavMenu() {
   const { data: session } = useSession();
 
+  const path = (usePathname() || "/").split("/")[1];
+  const isHomePage = path !== "dashboard";
+
   if (session) {
     return (
       <Flex gap="4" align="center">
+        <Link weight="bold" size="2" asChild mr="2">
+          <NextLink href={`/${isHomePage ? "dashboard" : ""}`}>
+            {isHomePage ? "Dashboard" : <Home size="18px" />}
+          </NextLink>
+        </Link>
         <Avatar
           src={
             session.user?.image ??

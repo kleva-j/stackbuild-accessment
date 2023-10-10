@@ -6,11 +6,11 @@ services:
       - '5932:5432' # expose pg on port 5932 to not collide with pg from elswhere
     restart: always
     volumes:
-      - db_data:/var/lib/postgresql/data
+      - postgres:/var/lib/postgresql/data
     environment:
       POSTGRES_USER: "user"
       POSTGRES_PASSWORD: "pass"
       POSTGRES_DB: testdb
       POSTGRES_HOST_AUTH_METHOD: trust
 volumes:
-  db_data:
+  postgres:
