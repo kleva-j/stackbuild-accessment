@@ -8,8 +8,13 @@ import { getServerSession } from "next-auth";
 import { PropsWithChildren } from "react";
 
 // Context providers
+import QueryClientProvider from "@/components/Providers/QueryClientProvider";
 import SessionProvider from "@/components/Providers/SessionProvider";
 import ThemeProvider from "@/components/Providers/ThemeProvider";
+
+// Layout components
+import Header from "@/components/Layout/Header";
+import Footer from "@/components/Layout/Footer";
 
 export const metadata: Metadata = {
   title: "StackBuild",
@@ -22,9 +27,15 @@ export default async function RootLayout({ children }: PropsWithChildren) {
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${FontSans.variable} ${FontMono.variable} font-sans`}>
-        <SessionProvider session={session}>
-          <ThemeProvider>{children}</ThemeProvider>
-        </SessionProvider>
+        <QueryClientProvider>
+          <SessionProvider session={session}>
+            <ThemeProvider>
+              <Header />
+              {children}
+              <Footer />
+            </ThemeProvider>
+          </SessionProvider>
+        </QueryClientProvider>
       </body>
     </html>
   );

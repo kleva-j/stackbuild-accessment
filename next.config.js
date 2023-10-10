@@ -42,9 +42,7 @@ const securityHeaders = [
   },
 ];
 
-/**
- * @type {import('next/dist/next-server/server/config').NextConfig}
- **/
+/** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
   pageExtensions: ["ts", "tsx", "js", "jsx", "md", "mdx"],
@@ -56,6 +54,9 @@ const nextConfig = {
     return [{ source: "/(.*)", headers: securityHeaders }];
   },
   swcMinify: true,
+  experimental: {
+    serverActions: true,
+  },
 };
 
 module.exports = withContentlayer(nextConfig);
