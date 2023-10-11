@@ -5,6 +5,7 @@ import type { Metadata } from "next";
 
 import { FontSans, FontMono } from "@/lib/fonts";
 import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/nextAuth";
 import { PropsWithChildren } from "react";
 
 // Context providers
@@ -22,7 +23,7 @@ export const metadata: Metadata = {
 };
 
 export default async function RootLayout({ children }: PropsWithChildren) {
-  const session = await getServerSession();
+  const session = await getServerSession(authOptions);
 
   return (
     <html lang="en" suppressHydrationWarning>
