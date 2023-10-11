@@ -1,10 +1,8 @@
 /* eslint-disable @next/next/no-img-element */
-import { Card, Flex, Inset, Text } from "@radix-ui/themes";
+import { Card, Inset, Text } from "@radix-ui/themes";
 import { Post } from "@prisma/client";
 
-import Image from "next/image";
-
-export const PostCard = ({ title, content }: Post) => {
+export const PostCard = ({ title }: Post) => {
   return (
     <Card size="2" style={{ maxWidth: 320 }}>
       <Inset clip="padding-box" side="top" pb="current">
@@ -20,14 +18,9 @@ export const PostCard = ({ title, content }: Post) => {
           }}
         />
       </Inset>
-      <Flex gap="2" direction="column">
-        <Text as="div" size="3" weight="bold">
-          {title}
-        </Text>
-        <Text as="p" size="2">
-          {content}
-        </Text>
-      </Flex>
+      <Text as="div" size="3" weight="bold">
+        {title}
+      </Text>
     </Card>
   );
 };
