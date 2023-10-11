@@ -1,10 +1,12 @@
 "use client";
 
-import { Callout, Flex, Link, Box } from "@radix-ui/themes";
 import { InfoCircledIcon } from "@radix-ui/react-icons";
+import { Callout, Flex, Link } from "@radix-ui/themes";
+import { CardList } from "@/components/PostCardList";
 import { useQuery } from "@tanstack/react-query";
-import { CardList } from "./PostCardList";
 import { fetchPosts } from "@/lib/api";
+
+import Loading from "@/app/(protected)/dashboard/loading";
 
 export const PostFeed = () => {
   const query = useQuery({ queryKey: ["posts"], queryFn: fetchPosts });
@@ -12,9 +14,7 @@ export const PostFeed = () => {
   return (
     <Flex>
       {query.isLoading ? (
-        <Box height="9" mx="auto" className="text-center">
-          ...loading
-        </Box>
+        <Loading />
       ) : query.isError ? (
         <Callout.Root>
           <Callout.Icon>

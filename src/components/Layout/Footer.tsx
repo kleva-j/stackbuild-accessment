@@ -1,7 +1,7 @@
 export default function Footer() {
   return (
-    <div className="fixed bottom-0 w-full py-5 text-center">
-      <p className="text-gray-500">
+    <div className="w-full border-t-[0.5px] border-slate-300 py-5 text-center dark:border-slate-600">
+      <p className="text-xs text-gray-500">
         A project by{" "}
         <a
           className="font-semibold text-gray-600 underline-offset-4 transition-colors hover:underline"

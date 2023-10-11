@@ -4,7 +4,7 @@ import { PropsWithChildren } from "react";
 
 export default function Layout({ children }: PropsWithChildren) {
   return (
-    <Container pt="8">
+    <Container my="8">
       <Flex gap={{ initial: "0", sm: "8" }} px="4">
         <Sidebar />
         {children}

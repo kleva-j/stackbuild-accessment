@@ -127,7 +127,7 @@ export function Editor({ post }: EditorProps) {
   }, [isMounted, initializeEditor]);
 
   return (
-    <Box mt="6" px="4">
+    <Box my="6" px="4">
       <form onSubmit={handleSubmit(onSubmit)}>
         <Flex direction="column" gap="6">
           <Flex
