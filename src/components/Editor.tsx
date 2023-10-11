@@ -34,7 +34,6 @@ type FormData = z.infer<typeof postPatchSchema>;
 export function Editor({ post }: EditorProps) {
   const { register, handleSubmit } = useForm<FormData>({
     resolver: zodResolver(postPatchSchema),
-    defaultValues: { ...post },
   });
 
   const mutation = useMutation({
@@ -47,6 +46,7 @@ export function Editor({ post }: EditorProps) {
   const [isSaving, setIsSaving] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
   const [showMessage, setShowMessage] = useState(false);
+  const [isPublished, setPublished] = useState(post.published);
 
   async function onSubmit(data: FormData) {
     setIsSaving(true);
@@ -56,7 +56,7 @@ export function Editor({ post }: EditorProps) {
       const response = await mutation.mutateAsync({
         id: post.id,
         title: data.title,
-        published: post.published,
+        published: isPublished,
         content: blocks as unknown as string,
       });
 
@@ -65,6 +65,7 @@ export function Editor({ post }: EditorProps) {
         return;
       }
 
+      router.refresh();
       router.push("/dashboard");
       setShowMessage(false);
     } catch (err) {
@@ -94,7 +95,6 @@ export function Editor({ post }: EditorProps) {
         },
         placeholder: "Type here to write your post...",
         inlineToolbar: true,
-        // @ts-ignore
         data: body.content,
         tools: {
           header: Header,
@@ -146,7 +146,7 @@ export function Editor({ post }: EditorProps) {
                   Back
                 </Link>
               </Button>
-              <Badge color={post.published ? "green" : "orange"}>
+              <Badge color={post.published ? "green" : "orange"} radius="large">
                 {post.published ? "Published" : "Draft"}
               </Badge>
             </Flex>
@@ -165,7 +165,12 @@ export function Editor({ post }: EditorProps) {
             >
               <Text as="label" size="2">
                 <Flex gap="2" align="center">
-                  <Switch size="1" {...register("published")} />
+                  <Switch
+                    size="1"
+                    variant="soft"
+                    defaultChecked={isPublished}
+                    onCheckedChange={setPublished}
+                  />
                   <Text size="1" weight="medium">
                     Public
                   </Text>
