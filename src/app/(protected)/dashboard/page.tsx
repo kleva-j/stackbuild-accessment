@@ -2,6 +2,8 @@ import { Posts } from "@/app/(protected)/dashboard/components/PostsView";
 import { Box, Flex, Text, Heading, Button } from "@radix-ui/themes";
 import { PlusIcon } from "@radix-ui/react-icons";
 
+import Link from "next/link";
+
 export default function Page() {
   return (
     <Flex direction="column" gap="5" className="flex-1">
@@ -12,8 +14,10 @@ export default function Page() {
           </Heading>
           <Text>Create and manage your posts</Text>
         </Box>
-        <Button>
-          <PlusIcon /> New Post
+        <Button asChild>
+          <Link href="/editor/new">
+            <PlusIcon /> New Post
+          </Link>
         </Button>
       </Flex>
       <Posts />

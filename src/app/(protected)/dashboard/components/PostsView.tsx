@@ -39,7 +39,7 @@ export const Posts = async () => {
                   {formattedDate}
                 </Text>
               </Box>
-              <OptionMenu />
+              <OptionMenu postId={post.id} />
             </Flex>
           </Card>
         );
