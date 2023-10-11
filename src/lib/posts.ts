@@ -63,6 +63,13 @@ export const getPostByUser = async (userId: string) => {
   return posts;
 };
 
+export const getSinglePostByUser = async (id: string, userId: string) => {
+  const posts = await prisma.post.findMany({
+    where: { userId, id },
+  });
+  return posts;
+};
+
 export const getSinglePost = async (id: string) => {
   const post = await prisma.post.findUnique({
     where: {

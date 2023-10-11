@@ -1,12 +1,12 @@
-import {
-  deletePost,
-  getPaginatedPosts,
-  saveNewPost,
-  updatePost,
-} from "@/lib/posts";
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/nextAuth";
+import {
+  getPaginatedPosts,
+  saveNewPost,
+  deletePost,
+  updatePost,
+} from "@/lib/posts";
 
 import prisma from "@/lib/prisma";
 
