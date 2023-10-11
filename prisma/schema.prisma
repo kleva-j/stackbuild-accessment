@@ -14,12 +14,12 @@ model Account {
   type              String
   provider          String
   providerAccountId String
-  refresh_token     String? @db.Text
-  access_token      String? @db.Text
+  refresh_token     String?
+  access_token      String?
   expires_at        Int?
   token_type        String?
   scope             String?
-  id_token          String? @db.Text
+  id_token          String?
   session_state     String?
   user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
@@ -43,13 +43,13 @@ model User {
   email         String?   @unique
   emailVerified DateTime? @map("email_verified")
   image         String?
-  createdAt     DateTime  @default(now()) @map(name: "created_at")
-  updatedAt     DateTime  @updatedAt @map(name: "updated_at")
-  posts         Post[]
-  comments      Comment[]
+  createdAt     DateTime  @default(now()) @map("created_at")
+  updatedAt     DateTime  @updatedAt @map("updated_at")
   accounts      Account[]
-  sessions      Session[]
+  comments      Comment[]
   likes         Like[]
+  posts         Post[]
+  sessions      Session[]
 }
 
 model VerificationToken {
@@ -65,12 +65,12 @@ model Post {
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   title     String
-  content   Json?
   published Boolean   @default(false)
-  user      User      @relation(fields: [userId], references: [id])
   userId    String
+  content   Json?
   comments  Comment[]
   likes     Like[]
+  user      User      @relation(fields: [userId], references: [id])
 }
 
 model Like {
@@ -83,10 +83,10 @@ model Like {
 
 model Comment {
   id        String   @id @default(cuid())
-  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
-  user      User     @relation(fields: [userId], references: [id])
   content   String
   postId    String
   userId    String
   createdAt DateTime @default(now())
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id])
 }

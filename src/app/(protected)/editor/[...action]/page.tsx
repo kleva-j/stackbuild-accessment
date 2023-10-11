@@ -29,7 +29,7 @@ const getPostByUser = async (id: string): Promise<Post> => {
   }
 };
 
-const newPost = { title: "", content: "", published: false };
+const newPost: any = { title: "", content: "", published: false };
 
 export default async function Page({
   params,
