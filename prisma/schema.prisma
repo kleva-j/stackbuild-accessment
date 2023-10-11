@@ -65,7 +65,7 @@ model Post {
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   title     String
-  content   String
+  content   Json?
   published Boolean   @default(false)
   user      User      @relation(fields: [userId], references: [id])
   userId    String
