@@ -1,19 +1,12 @@
 "use client";
 
-import { DotsHorizontalIcon } from "@radix-ui/react-icons";
+import { AlertDialog, IconButton, Button, Flex } from "@radix-ui/themes";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { deletePost } from "@/lib/api";
-import {
-  AlertDialog,
-  IconButton,
-  Popover,
-  Button,
-  Text,
-  Flex,
-} from "@radix-ui/themes";
+import { Trash2 } from "lucide-react";
 
-export const OptionMenu = ({ postId }: { postId: string }) => {
+export const DeletePost = ({ postId }: { postId: string }) => {
   const router = useRouter();
 
   const mutation = useMutation({ mutationFn: deletePost });
@@ -24,47 +17,31 @@ export const OptionMenu = ({ postId }: { postId: string }) => {
   };
 
   return (
-    <Popover.Root>
-      <Popover.Trigger>
-        <IconButton size="2" variant="outline" color="gray" radius="large">
-          <DotsHorizontalIcon />
+    <AlertDialog.Root>
+      <AlertDialog.Trigger>
+        <IconButton variant="ghost" size="1" className="cursor-pointer">
+          <Trash2 className="h-4 w-4" />
         </IconButton>
-      </Popover.Trigger>
-      <Popover.Content>
-        <Flex direction="column" gap="3">
-          <Button size="1" color="gray" radius="large">
-            <Text size="1" onClick={() => router.push(`/editor/${postId}`)}>
-              Edit
-            </Text>
-          </Button>
-          <AlertDialog.Root>
-            <AlertDialog.Trigger>
-              <Button size="1" color="red" radius="large">
-                <Text size="1">Delete</Text>
-              </Button>
-            </AlertDialog.Trigger>
-            <AlertDialog.Content>
-              <AlertDialog.Title>Are you sure?</AlertDialog.Title>
-              <AlertDialog.Description size="2">
-                Are you sure you want to delete this post?.
-              </AlertDialog.Description>
+      </AlertDialog.Trigger>
+      <AlertDialog.Content>
+        <AlertDialog.Title>Are you sure?</AlertDialog.Title>
+        <AlertDialog.Description size="2">
+          Are you sure you want to delete this post?.
+        </AlertDialog.Description>
 
-              <Flex gap="3" mt="4" justify="end">
-                <AlertDialog.Cancel>
-                  <Button variant="soft" color="gray">
-                    Cancel
-                  </Button>
-                </AlertDialog.Cancel>
-                <AlertDialog.Action onClick={handleDelete}>
-                  <Button variant="solid" color="red">
-                    Delete
-                  </Button>
-                </AlertDialog.Action>
-              </Flex>
-            </AlertDialog.Content>
-          </AlertDialog.Root>
+        <Flex gap="3" mt="4" justify="end">
+          <AlertDialog.Cancel>
+            <Button variant="soft" color="gray">
+              Cancel
+            </Button>
+          </AlertDialog.Cancel>
+          <AlertDialog.Action onClick={handleDelete}>
+            <Button variant="solid" color="red">
+              Delete
+            </Button>
+          </AlertDialog.Action>
         </Flex>
-      </Popover.Content>
-    </Popover.Root>
+      </AlertDialog.Content>
+    </AlertDialog.Root>
   );
 };

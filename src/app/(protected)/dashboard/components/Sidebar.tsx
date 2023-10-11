@@ -1,7 +1,7 @@
 "use client";
 
 import { FileTextIcon, GearIcon } from "@radix-ui/react-icons";
-import { Button, Flex } from "@radix-ui/themes";
+import { Button, Flex, Text } from "@radix-ui/themes";
 import { usePathname } from "next/navigation";
 
 import Link from "next/link";
@@ -28,7 +28,12 @@ export const Sidebar = () => {
   const path = pathname.split("/").pop();
 
   return (
-    <Flex direction="column" gap="2" className="w-40">
+    <Flex
+      display={{ initial: "none", sm: "flex" }}
+      direction="column"
+      gap="2"
+      className="w-40"
+    >
       {navLinks.map((item) => {
         const Icon = item.icon;
         const isActive = path == item.path;
@@ -38,13 +43,14 @@ export const Sidebar = () => {
             variant="soft"
             className="cursor-pointer"
             {...(!isActive ? { color: "gray" } : {})}
+            asChild
           >
-            <Flex justify="start" align="center" width="100%" gap="2">
-              <Icon />
-              <Link href={item.href} className="capitalize">
-                {item.label}
-              </Link>
-            </Flex>
+            <Link href={item.href}>
+              <Flex justify="start" align="center" width="100%" gap="2">
+                <Icon />
+                <Text className="capitalize">{item.label}</Text>
+              </Flex>
+            </Link>
           </Button>
         );
       })}
