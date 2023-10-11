@@ -1,6 +1,9 @@
 "use client";
 
 import { DotsHorizontalIcon } from "@radix-ui/react-icons";
+import { useMutation } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
+import { deletePost } from "@/lib/api";
 import {
   AlertDialog,
   IconButton,
@@ -10,7 +13,16 @@ import {
   Flex,
 } from "@radix-ui/themes";
 
-export const OptionMenu = () => {
+export const OptionMenu = ({ postId }: { postId: string }) => {
+  const router = useRouter();
+
+  const mutation = useMutation({ mutationFn: deletePost });
+
+  const handleDelete = async () => {
+    await mutation.mutateAsync(postId);
+    router.refresh();
+  };
+
   return (
     <Popover.Root>
       <Popover.Trigger>
@@ -21,7 +33,9 @@ export const OptionMenu = () => {
       <Popover.Content>
         <Flex direction="column" gap="3">
           <Button size="1" color="gray" radius="large">
-            <Text size="1">Edit</Text>
+            <Text size="1" onClick={() => router.push(`/editor/${postId}`)}>
+              Edit
+            </Text>
           </Button>
           <AlertDialog.Root>
             <AlertDialog.Trigger>
@@ -41,7 +55,7 @@ export const OptionMenu = () => {
                     Cancel
                   </Button>
                 </AlertDialog.Cancel>
-                <AlertDialog.Action>
+                <AlertDialog.Action onClick={handleDelete}>
                   <Button variant="solid" color="red">
                     Delete
                   </Button>
