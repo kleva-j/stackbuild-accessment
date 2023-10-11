@@ -94,6 +94,7 @@ export function Editor({ post }: EditorProps) {
         },
         placeholder: "Type here to write your post...",
         inlineToolbar: true,
+        // @ts-ignore
         data: body.content,
         tools: {
           header: Header,
