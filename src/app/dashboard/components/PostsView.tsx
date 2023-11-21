@@ -1,8 +1,7 @@
-import { DeletePost } from "@/app/(protected)/dashboard/components/DeletePost";
+import { DeletePost } from "@/app/dashboard/components/DeletePost";
 import { ThumbsUp, MessageCircle, Pencil } from "lucide-react";
-import { checkUserExist } from "@/app/api/post/route";
-import { getPostByUser } from "@/lib/posts";
-import { User } from "@prisma/client";
+import { GetPostByUserAction } from "@/app/actions";
+import { handleAuthState } from "@/lib/auth";
 import {
   IconButton,
   Tooltip,
@@ -16,11 +15,11 @@ import {
 import Link from "next/link";
 
 export const Posts = async () => {
-  const user = (await checkUserExist()) as User;
+  const user = await handleAuthState();
 
-  const posts = await getPostByUser(user?.id);
+  const posts = await GetPostByUserAction(user?.id);
 
-  if (!posts)
+  if (!posts.length)
     return (
       <Box
         p="4"

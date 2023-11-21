@@ -6,7 +6,7 @@ import Link from "next/link";
 
 export const PostCard = ({ title, id }: Post) => {
   return (
-    <Card size="2" style={{ maxWidth: 320 }} asChild>
+    <Card size="2" style={{ maxWidth: 300 }} asChild>
       <Link href={`/post/${id}`}>
         <Inset clip="padding-box" side="top" pb="current">
           <img
@@ -16,7 +16,7 @@ export const PostCard = ({ title, id }: Post) => {
               display: "block",
               objectFit: "cover",
               width: "100%",
-              height: 140,
+              height: 150,
               backgroundColor: "var(--gray-5)",
             }}
           />
