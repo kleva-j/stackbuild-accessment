@@ -1,5 +1,5 @@
-import { Posts } from "@/app/(protected)/dashboard/components/PostsView";
 import { Box, Flex, Text, Heading, Button } from "@radix-ui/themes";
+import { Posts } from "@/app/dashboard/components/PostsView";
 import { PlusIcon } from "@radix-ui/react-icons";
 
 import Link from "next/link";

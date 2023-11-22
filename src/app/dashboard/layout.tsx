@@ -1,4 +1,4 @@
-import { Sidebar } from "@/app/(protected)/dashboard/components/Sidebar";
+import { Sidebar } from "@/app/dashboard/components/Sidebar";
 import { Container, Flex } from "@radix-ui/themes";
 import { PropsWithChildren } from "react";
 
