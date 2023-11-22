@@ -1,6 +1,6 @@
 import { DeletePost } from "@/app/dashboard/components/DeletePost";
 import { ThumbsUp, MessageCircle, Pencil } from "lucide-react";
-import { GetPostByUserAction } from "@/app/actions";
+import { GetPostsByUserAction } from "@/app/actions";
 import { handleAuthState } from "@/lib/auth";
 import {
   IconButton,
@@ -17,7 +17,7 @@ import Link from "next/link";
 export const Posts = async () => {
   const user = await handleAuthState();
 
-  const posts = await GetPostByUserAction(user?.id);
+  const posts = await GetPostsByUserAction(user?.id);
 
   if (!posts.length)
     return (

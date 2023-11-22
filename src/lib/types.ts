@@ -11,4 +11,6 @@ export interface $InsertPost {
   published?: boolean;
 }
 
-export interface $UpdatePost extends $InsertPost {}
+export interface $UpdatePost extends $InsertPost {
+  id: string;
+}

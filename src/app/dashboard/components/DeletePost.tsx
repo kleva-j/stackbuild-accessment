@@ -1,18 +1,15 @@
 "use client";
 
 import { AlertDialog, IconButton, Button, Flex } from "@radix-ui/themes";
-import { useMutation } from "@tanstack/react-query";
+import { DeletePostAction } from "@/app/actions";
 import { useRouter } from "next/navigation";
-import { deletePost } from "@/lib/api";
 import { Trash2 } from "lucide-react";
 
 export const DeletePost = ({ postId }: { postId: string }) => {
   const router = useRouter();
 
-  const mutation = useMutation({ mutationFn: deletePost });
-
   const handleDelete = async () => {
-    await mutation.mutateAsync(postId);
+    await DeletePostAction(postId);
     router.refresh();
   };
 
