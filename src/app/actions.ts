@@ -7,7 +7,25 @@ import { revalidatePath } from "next/cache";
 
 import prisma from "@/lib/prisma";
 
-export async function GetPostByUserAction(userId: string) {
+export async function GetPostByUserAction(id: string, userId: string) {
+  try {
+    const isAuthed = await checkIfAuthed();
+
+    const posts = await prisma.post.findUnique({
+      where: { id, userId, ...(!isAuthed ? { published: true } : {}) },
+      include: {
+        user: !!isAuthed,
+        likes: true,
+        comments: { orderBy: { createdAt: "desc" }, include: { user: true } },
+      },
+    });
+    return posts;
+  } catch (error) {
+    throw error;
+  }
+}
+
+export async function GetPostsByUserAction(userId: string) {
   try {
     const isAuthed = await checkIfAuthed();
 
@@ -77,11 +95,11 @@ export async function GetPaginatedPostAction({
     throw error;
   }
 }
-export async function DeletePostAction() {
+export async function DeletePostAction(postId: string) {
   try {
-    const { id } = await handleAuthState();
+    const { id: userId } = await handleAuthState();
 
-    await prisma.post.delete({ where: { id } });
+    await prisma.post.delete({ where: { id: postId, userId } });
 
     revalidatePath("/dashboard");
   } catch (error) {
@@ -89,14 +107,14 @@ export async function DeletePostAction() {
   }
 }
 
-export async function EditPostAction(id: string, data: $UpdatePost) {
+export async function EditPostAction(data: $UpdatePost) {
   try {
-    const { id } = await handleAuthState();
+    const { id: userId } = await handleAuthState();
 
-    const { title, content, published = false } = data;
+    const { id, title, content, published = false } = data;
 
     await prisma.post.update({
-      where: { id },
+      where: { id, userId },
       data: { title, content, published },
     });
 

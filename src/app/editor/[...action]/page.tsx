@@ -1,41 +1,32 @@
 import { GetSinglePostAction } from "@/app/actions";
+import { handleAuthState } from "@/lib/auth";
 import { Editor } from "@/components/Editor";
-import { checkIfAuthed } from "@/lib/auth";
-import { redirect } from "next/navigation";
 import { Post } from "@prisma/client";
+import { z } from "zod";
 
-const getPostByUser = async (id: string): Promise<Post> => {
+const fetchPost = async (id: string): Promise<Post | { error: Error }> => {
   try {
-    const user = await checkIfAuthed();
-
-    if (!user) redirect("/api/auth/signin");
-
+    await handleAuthState();
     const post = await GetSinglePostAction(id);
-
     if (!post) throw new Error("Post not found!");
-
     return post;
   } catch (err: unknown) {
-    throw err;
+    return { error: err as Error };
   }
 };
 
-const newPost: any = { title: "", content: "", published: false };
+type PageProps = { params: { action: string[] } };
 
-export default async function Page({
-  params,
-}: {
-  params: { action: string[] };
-}) {
-  const { action } = params;
+export default async function Page({ params }: PageProps) {
+  let post: any = { title: "", content: "", published: false };
 
-  const id = action[0];
+  const [path, id] = params["action"];
 
-  let post = newPost;
-
-  if (id !== "new") {
-    post = await getPostByUser(id);
+  if (path !== "new") {
+    const isValidId = z.string().cuid().safeParse(path);
+    if (isValidId.success) post = await fetchPost(path);
+    else throw new Error("Invalid post action");
   }
 
-  return <Editor post={{ id, ...post }} />;
+  return <Editor path={path} post={{ id, ...post }} />;
 }
