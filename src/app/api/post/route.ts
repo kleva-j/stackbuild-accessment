@@ -1,36 +1,23 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/nextAuth";
-import {
-  getPaginatedPosts,
-  saveNewPost,
-  deletePost,
-  updatePost,
-} from "@/lib/posts";
+import { GetPaginatedPostAction } from "@/app/actions";
+import { handleAuthState } from "@/lib/auth";
 
 import prisma from "@/lib/prisma";
-
-export const checkUserExist = async () => {
-  const session = await getServerSession(authOptions);
-  const user = await prisma.user.findFirst({
-    where: { email: session?.user?.email },
-  });
-
-  if (!user) {
-    new Response("User not found!", { status: 400 });
-    return;
-  }
-  return user;
-};
 
 export const GET = async (req: NextRequest) => {
   const limit = 10;
   const { searchParams } = new URL(req.url);
   const cursor = searchParams.get("cursor") ?? "";
-  const cursorObj = cursor === "" ? undefined : { id: cursor };
+  const skip = Number(searchParams.get("skip") ?? 0);
+  const cursorObj = !cursor ? undefined : { id: cursor };
 
   try {
-    const posts = await getPaginatedPosts(cursor ? 1 : 0, limit, cursorObj);
+    const result = await GetPaginatedPostAction({
+      skip,
+      take: limit,
+      cursor: cursorObj,
+    });
+    const { data: posts } = result;
     return NextResponse.json(
       {
         posts,
@@ -47,18 +34,13 @@ export const POST = async (req: NextRequest) => {
   try {
     const { title, content, published } = await req.json();
 
-    const user = await checkUserExist();
+    const { id } = await handleAuthState();
 
-    if (user) {
-      const newPost = await saveNewPost({
-        userId: user.id,
-        title,
-        content,
-        published,
-      });
+    const newPost = await prisma.post.create({
+      data: { title, content, published, user: { connect: { id } } },
+    });
 
-      return NextResponse.json({ post: newPost }, { status: 201 });
-    }
+    return NextResponse.json({ post: newPost }, { status: 201 });
   } catch (err: unknown) {
     return NextResponse.json((err as Error).message, { status: 500 });
   }
@@ -68,33 +50,28 @@ export const DELETE = async (req: NextRequest) => {
   const { id } = await req.json();
 
   try {
-    const user = await checkUserExist();
+    const { id: userId } = await handleAuthState();
 
-    if (user) {
-      await deletePost(id, user.id);
-      return NextResponse.json({ id }, { status: 200 });
-    }
+    await prisma.post.delete({ where: { id, userId } });
+
+    return NextResponse.json({ id }, { status: 200 });
   } catch (err: unknown) {
     return NextResponse.json((err as Error).message, { status: 500 });
   }
 };
 
 export const PUT = async (req: NextRequest) => {
-  const { id, title, content, published } = await req.json();
+  const { id, title, content, published = false } = await req.json();
 
   try {
-    const user = await checkUserExist();
+    const { id: userId } = await handleAuthState();
 
-    if (user) {
-      const post = await updatePost(id, {
-        userId: user.id,
-        title,
-        content,
-        published,
-      });
+    const post = await prisma.post.update({
+      where: { id, userId },
+      data: { title, content, published },
+    });
 
-      return NextResponse.json({ post }, { status: 200 });
-    }
+    return NextResponse.json({ post }, { status: 200 });
   } catch (err: unknown) {
     return NextResponse.json((err as Error).message, { status: 500 });
   }

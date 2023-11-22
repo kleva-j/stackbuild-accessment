@@ -1,7 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 import { JsonRenderer } from "@/app/post/[id]/components/Renderer";
 import { ChevronLeft, Heart, MessageSquare } from "lucide-react";
-import { getSinglePost } from "@/lib/posts";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 import {
@@ -15,6 +14,7 @@ import {
   Text,
   Box,
 } from "@radix-ui/themes";
+import { GetSinglePostAction } from "@/app/actions";
 
 export default async function Page(props: { params: { id: string } }) {
   const { id } = props.params;
@@ -23,7 +23,7 @@ export default async function Page(props: { params: { id: string } }) {
 
   if (!isValidId.success) redirect("/");
 
-  const post = await getSinglePost(id);
+  const post = await GetSinglePostAction(id);
 
   if (!post)
     return (

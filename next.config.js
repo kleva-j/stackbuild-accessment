@@ -1,8 +1,8 @@
 const { withContentlayer } = require("next-contentlayer");
 
+// script-src 'self' 'unsafe-eval' 'unsafe-inline' giscus.app analytics.umami.is;
+// default-src 'self';
 const ContentSecurityPolicy = `
-  default-src 'self';
-  script-src 'self' 'unsafe-eval' 'unsafe-inline' giscus.app analytics.umami.is;
   style-src 'self' 'unsafe-inline';
   img-src * blob: data:;
   media-src *.s3.amazonaws.com;
@@ -54,9 +54,6 @@ const nextConfig = {
     return [{ source: "/(.*)", headers: securityHeaders }];
   },
   swcMinify: true,
-  experimental: {
-    serverActions: true,
-  },
 };
 
 module.exports = withContentlayer(nextConfig);

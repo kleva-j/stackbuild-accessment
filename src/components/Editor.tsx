@@ -1,12 +1,12 @@
 "use client";
 
 import { useState, useRef, useCallback, useEffect } from "react";
+import { CreatePostAction, EditPostAction } from "@/app/actions";
 import { errorMessages, postPatchSchema } from "@/lib/constant";
+import { $InsertPost, $UpdatePost, Json } from "@/lib/types";
 import { InfoCircledIcon } from "@radix-ui/react-icons";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ChevronLeft, Loader2 } from "lucide-react";
-import { useMutation } from "@tanstack/react-query";
-import { createPost, updatePost } from "@/lib/api";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { Post } from "@prisma/client";
@@ -25,19 +25,23 @@ import TextareaAutosize from "react-textarea-autosize";
 import EditorJS from "@editorjs/editorjs";
 import Link from "next/link";
 
+const submitActions: Record<string, actionType> = {
+  new: CreatePostAction,
+  edit: EditPostAction,
+};
+
+type CreateActionType = (v: $InsertPost) => Promise<void>;
+type EditActionType = (v: $UpdatePost) => Promise<void>;
+type actionType = CreateActionType | EditActionType;
+type FormData = z.infer<typeof postPatchSchema>;
 interface EditorProps {
   post: Pick<Post, "id" | "title" | "content" | "published">;
+  path: string;
 }
 
-type FormData = z.infer<typeof postPatchSchema>;
-
-export function Editor({ post }: EditorProps) {
+export function Editor({ post, path }: EditorProps) {
   const { register, handleSubmit } = useForm<FormData>({
     resolver: zodResolver(postPatchSchema),
-  });
-
-  const mutation = useMutation({
-    mutationFn: post.id === "new" ? createPost : updatePost,
   });
 
   const ref = useRef<EditorJS>();
@@ -53,26 +57,22 @@ export function Editor({ post }: EditorProps) {
     const blocks = await ref.current?.save();
 
     try {
-      const response = await mutation.mutateAsync({
+      const values = {
         id: post.id,
         title: data.title,
         published: isPublished,
-        content: blocks as unknown as string,
-      });
+        content: blocks as unknown as Json,
+      } as $UpdatePost & $InsertPost;
 
-      if (response.status !== 200) {
-        setShowMessage(true);
-        return;
-      }
+      const action = submitActions[path];
+      await action(values);
 
-      router.refresh();
       router.push("/dashboard");
       setShowMessage(false);
     } catch (err) {
       setShowMessage(true);
-    } finally {
-      setIsSaving(false);
     }
+    setIsSaving(false);
   }
 
   const initializeEditor = useCallback(async () => {

@@ -1,19 +1,13 @@
 import "./globals.css";
 import "@radix-ui/themes/styles.css";
 
+import type { PropsWithChildren } from "react";
 import type { Metadata } from "next";
 
 import { FontSans, FontMono } from "@/lib/fonts";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/nextAuth";
-import { PropsWithChildren } from "react";
+import { ClerkProvider } from "@clerk/nextjs";
 
-// Context providers
-import QueryClientProvider from "@/components/Providers/QueryClientProvider";
-import SessionProvider from "@/components/Providers/SessionProvider";
 import ThemeProvider from "@/components/Providers/ThemeProvider";
-
-// Layout components
 import Header from "@/components/Layout/Header";
 import Footer from "@/components/Layout/Footer";
 
@@ -23,21 +17,19 @@ export const metadata: Metadata = {
 };
 
 export default async function RootLayout({ children }: PropsWithChildren) {
-  const session = await getServerSession(authOptions);
-
   return (
-    <html lang="en" suppressHydrationWarning>
-      <body className={`${FontSans.variable} ${FontMono.variable} font-sans`}>
-        <QueryClientProvider>
-          <SessionProvider session={session}>
-            <ThemeProvider>
+    <ClerkProvider>
+      <html lang="en" suppressHydrationWarning>
+        <body className={`${FontSans.variable} ${FontMono.variable} font-sans`}>
+          <ThemeProvider>
+            <div className="flex h-screen flex-col">
               <Header />
-              {children}
+              <div className="flex-1 px-4">{children}</div>
               <Footer />
-            </ThemeProvider>
-          </SessionProvider>
-        </QueryClientProvider>
-      </body>
-    </html>
+            </div>
+          </ThemeProvider>
+        </body>
+      </html>
+    </ClerkProvider>
   );
 }
