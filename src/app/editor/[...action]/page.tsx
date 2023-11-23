@@ -1,4 +1,4 @@
-import { GetSinglePostAction } from "@/app/actions";
+import { GetPostByUserAction } from "@/app/actions";
 import { handleAuthState } from "@/lib/auth";
 import { Editor } from "@/components/Editor";
 import { Post } from "@prisma/client";
@@ -7,7 +7,7 @@ import { z } from "zod";
 const fetchPost = async (id: string): Promise<Post | { error: Error }> => {
   try {
     await handleAuthState();
-    const post = await GetSinglePostAction(id);
+    const post = await GetPostByUserAction({ id });
     if (!post) throw new Error("Post not found!");
     return post;
   } catch (err: unknown) {
@@ -23,8 +23,8 @@ export default async function Page({ params }: PageProps) {
   const [path, id] = params["action"];
 
   if (path !== "new") {
-    const isValidId = z.string().cuid().safeParse(path);
-    if (isValidId.success) post = await fetchPost(path);
+    const isValidId = z.string().uuid().safeParse(id);
+    if (isValidId.success) post = await fetchPost(id);
     else throw new Error("Invalid post action");
   }
 

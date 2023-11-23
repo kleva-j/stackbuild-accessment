@@ -2,21 +2,21 @@
 
 import type { $InsertPost, $UpdatePost } from "@/lib/types";
 
-import { checkIfAuthed, handleAuthState } from "@/lib/auth";
+import { checkIfAuthed, handleAuthState, getUser } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
+import { Prisma } from "@prisma/client";
 
 import prisma from "@/lib/prisma";
 
-export async function GetPostByUserAction(id: string, userId: string) {
+export async function GetPostByUserAction(args: Prisma.PostWhereUniqueInput) {
   try {
     const isAuthed = await checkIfAuthed();
 
     const posts = await prisma.post.findUnique({
-      where: { id, userId, ...(!isAuthed ? { published: true } : {}) },
+      where: { ...args, ...(!isAuthed ? { published: true } : {}) },
       include: {
-        user: !!isAuthed,
         likes: true,
-        comments: { orderBy: { createdAt: "desc" }, include: { user: true } },
+        comments: { orderBy: { createdAt: "desc" } },
       },
     });
     return posts;
@@ -32,9 +32,8 @@ export async function GetPostsByUserAction(userId: string) {
     const posts = await prisma.post.findMany({
       where: { userId, ...(!isAuthed ? { published: true } : {}) },
       include: {
-        user: !!isAuthed,
         likes: true,
-        comments: { orderBy: { createdAt: "desc" }, include: { user: true } },
+        comments: { orderBy: { createdAt: "desc" } },
       },
     });
     return posts;
@@ -45,11 +44,13 @@ export async function GetPostsByUserAction(userId: string) {
 
 export async function GetSinglePostAction(postId: string) {
   try {
-    const posts = await prisma.post.findUnique({
-      where: { id: postId },
-      include: { user: true, comments: true },
+    const post = await prisma.post.findUnique({
+      where: { id: postId, published: true },
+      include: { comments: true },
     });
-    return posts;
+    if (!post) throw new Error("Post not found!");
+    const user = await getUser(post?.userId);
+    return { ...post, user };
   } catch (error) {
     throw error;
   }
@@ -58,6 +59,7 @@ export async function GetSinglePostAction(postId: string) {
 export async function GetAllPostsAction() {
   try {
     const posts = await prisma.post.findMany({
+      where: { published: true },
       include: { likes: true, comments: true },
       orderBy: { createdAt: "desc" },
     });
@@ -126,12 +128,12 @@ export async function EditPostAction(data: $UpdatePost) {
 
 export async function CreatePostAction(data: $InsertPost) {
   try {
-    const { id } = await handleAuthState();
+    const { id: userId } = await handleAuthState();
 
     const { title, content, published } = data;
 
     await prisma.post.create({
-      data: { title, content, published, user: { connect: { id } } },
+      data: { title, content, published, userId },
     });
 
     revalidatePath("/dashboard");

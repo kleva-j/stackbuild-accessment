@@ -23,6 +23,8 @@
     "db-generate": "prisma generate",
     "db-seed": "prisma db seed",
     "db-setup": "pnpm db-pull",
+    "db-reset": "tsx prisma/reset.ts",
+    "db-prepare": "run-s db-reset db-migrate-dev db-generate db-seed",
     "db-format": "prisma format",
     "turso-sync-migration": "pnpm dlx prisma migrate diff --from-empty --to-schema-datamodel prisma/schema.prisma --script > prisma/migration.sql",
     "turso-db-migrate": "turso db shell stb-test < prisma/migration.sql"

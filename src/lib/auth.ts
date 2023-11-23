@@ -19,3 +19,8 @@ export async function handleAuthState() {
   if (!authState) throw new Error("Unauthorized", { cause: "401" });
   return authState;
 }
+
+export async function getUser(userId: string) {
+  const user = await clerkClient.users.getUser(userId);
+  return user ?? null;
+}
