@@ -42,7 +42,7 @@ export const Posts = async () => {
           <Card key={post.id}>
             <Flex justify="between" align="center">
               <Flex direction="column" gap="2">
-                <Link href={`/editor/${post.id}`}>
+                <Link href={`/editor/edit/${post.id}`}>
                   <Text as="div" size="2" weight="bold">
                     {post.title}
                   </Text>

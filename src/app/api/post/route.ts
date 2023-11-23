@@ -34,10 +34,10 @@ export const POST = async (req: NextRequest) => {
   try {
     const { title, content, published } = await req.json();
 
-    const { id } = await handleAuthState();
+    const { id: userId } = await handleAuthState();
 
     const newPost = await prisma.post.create({
-      data: { title, content, published, user: { connect: { id } } },
+      data: { title, content, published, userId },
     });
 
     return NextResponse.json({ post: newPost }, { status: 201 });

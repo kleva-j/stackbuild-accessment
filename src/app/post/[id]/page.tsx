@@ -1,6 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 import { JsonRenderer } from "@/app/post/[id]/components/Renderer";
 import { ChevronLeft, Heart, MessageSquare } from "lucide-react";
+import { GetSinglePostAction } from "@/app/actions";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 import {
@@ -14,12 +15,11 @@ import {
   Text,
   Box,
 } from "@radix-ui/themes";
-import { GetSinglePostAction } from "@/app/actions";
 
 export default async function Page(props: { params: { id: string } }) {
   const { id } = props.params;
 
-  const isValidId = z.string().cuid().safeParse(id);
+  const isValidId = z.string().uuid().safeParse(id);
 
   if (!isValidId.success) redirect("/");
 
@@ -54,13 +54,13 @@ export default async function Page(props: { params: { id: string } }) {
           <Flex gap="3" align="center">
             <Avatar
               size="3"
-              src={post.user.image ?? ""}
+              src={post.user.imageUrl ?? ""}
               radius="full"
               fallback="T"
             />
             <Box>
               <Text as="div" size="2" weight="bold">
-                {post.user.name}
+                {post.user.firstName} {post.user.lastName}
               </Text>
               <Text as="div" size="1" color="gray">
                 {date}
