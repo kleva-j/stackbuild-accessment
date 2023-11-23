@@ -200,3 +200,6 @@ dev.db-journal
 # End of https://www.toptal.com/developers/gitignore/api/node,visualstudiocode
 
 certificates
+
+# vscode settings
+.vscode
